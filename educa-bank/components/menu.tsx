@@ -38,8 +38,8 @@ const GlassIcons: React.FC<GlassIconsProps> = ({ items, className }) => {
           description="Conta"
           name="Jane Doe"
         />
-        <Button color="danger" onClick={() => console.log("Logout")} className="flex items-center">
-          <MdLogout className="mr-1" /> Sair
+        <Button color="danger" onClick={() => console.log("Logout")} className="flex item-center border-1 rounded-full w-8 h-8 hover:bg-red-700 ml-4">
+          <MdLogout/>
         </Button>
       </div>
       
