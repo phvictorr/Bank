@@ -52,6 +52,8 @@ export class UserAccountController {
                 message: 'Login bem-sucedido.',
                 token: token,
             });
+
+            console.log("login efetuado com sucesso.");
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).json({ message: error.message });

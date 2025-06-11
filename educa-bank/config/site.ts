@@ -5,24 +5,24 @@ export const siteConfig = {
   description: "Educa Bank App",
   navItems: [
     {
-      label: "Home",
+      label: "Login",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Register",
+      href: "/register",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Home",
+      href: "/home",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Pix",
+      href: "/pix",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "Boletos",
+      href: "/boletos",
     },
   ],
   navMenuItems: [

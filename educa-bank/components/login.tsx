@@ -1,16 +1,40 @@
-"use client";
+'use client';
 
-import React from "react";
-import {Button, Input, Checkbox, Link} from "@heroui/react";
-import {Icon} from "@iconify/react";
+import React, { useState } from "react";
+import { Button, Input } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import ShinyText from './ShinyText';
 
-export default function Component() {
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = React.useState(false);
+export default function Login() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('');
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    try {
+      const response = await fetch(`${backendUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user, password })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('jwtToken', data.token);
+        window.location.href = '/home';
+      } else {
+        alert('Login failed!');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+  };
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -19,48 +43,34 @@ export default function Component() {
           <ShinyText text="educa bank" disabled={false} speed={3} className='text-6xl font-sans' />
           <p className="text-small text-default-500">Entre na sua conta.</p>
         </div>
-        <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-          <div className="flex flex-col">
+        <form className="flex flex-col gap-3" onSubmit={handleLogin}>
+          <div className="flex flex-col gap-2">
             <Input
               isRequired
-              classNames={{
-                base: "-mb-[2px]",
-                inputWrapper:
-                  "rounded-none data-[hover=true]:z-10 group-data-[focus-visible=true]:z-10",
-              }}
-              label="Email Address"
-              name="email"
-              placeholder="Enter your email"
-              type="email"
+              name="User"
+              placeholder="Digite seu @"
+              type="User"
               variant="bordered"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
             />
             <Input
               isRequired
-              classNames={{
-                base: "-mb-[2px]",
-                inputWrapper:
-                  "rounded-none data-[hover=true]:z-10 group-data-[focus-visible=true]:z-10",
-              }}
+              type={isVisible ? "text" : "password"}
+              name="password"
+              placeholder="Digite sua senha"
+              variant="bordered"
               endContent={
                 <button type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <Icon
-                      className="pointer-events-none text-2xl text-default-400"
-                      icon="solar:eye-closed-linear"
-                    />
+                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-closed-linear" />
                   ) : (
-                    <Icon
-                      className="pointer-events-none text-2xl text-default-400"
-                      icon="solar:eye-bold"
-                    />
+                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-bold" />
                   )}
                 </button>
               }
-              label="Password"
-              name="password"
-              placeholder="Enter your password"
-              type={isVisible ? "text" : "password"}
-              variant="bordered"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <Button color="default" type="submit">

@@ -22,7 +22,7 @@ const title_sonhos = "Sua caixinha dos Sonhos";
   const description_sonhos = "Rendeu R$ 1.12 ontem"
 
 export default function HomePage() {
-    const [isVisible, setIsVisible] = useState(true); // Estado para mostrar/ocultar o saldo
+    const [isVisible, setIsVisible] = useState(true);
 
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
@@ -45,8 +45,8 @@ export default function HomePage() {
                                 >
                                     {isVisible ? <MdVisibility /> : <MdVisibilityOff />}
                                 </button>
-                                <p className="text-tiny uppercase font-bold">Conta corrente</p>
-                                <small className="text-default-500">Cesta Free</small>
+                                <p className="text-tiny uppercase font-bold">Saldo</p>
+                                <small className="text-default-500">Conta corrente</small>
                             </CardHeader>
                             <CardBody className="overflow-visible py-2 flex flex-col items-start">
                                 <div className="text-3xl font-bold mb-2">
