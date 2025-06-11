@@ -5,13 +5,15 @@ import bigInt from 'big-integer';
 interface UserAccountRow {
     user: string;
     password: string;
+    email: string;
     hashAuthInt: string;
     saldo: string;
+    chavePix: string;
 }
 
 export class UserAccountRepository {
     public async save(userAccount: UserAccount): Promise<void> {
-        const { user, password, hashAuthInt, saldo } = userAccount;
+        const { user, email, password, hashAuthInt, saldo, chavePix } = userAccount;
 
         const existingUser = await this.findByUser(user);
         if (existingUser) {
@@ -19,10 +21,10 @@ export class UserAccountRepository {
         }
 
         const query = `
-            INSERT INTO user_accounts (user, password, hashAuthInt, saldo) 
-            VALUES (?, ?, ?, ?)`;
+            INSERT INTO user_accounts (user, email, password, hashAuthInt, saldo, chavePix) 
+            VALUES (?, ?, ?, ?, ?, ?)`;
         
-        const values = [user, password, hashAuthInt, saldo.toString()];
+        const values = [user, email, password, hashAuthInt, saldo.toString(), chavePix];
 
         const connection = await pool.getConnection();
         try {
@@ -62,9 +64,11 @@ export class UserAccountRepository {
             CREATE TABLE IF NOT EXISTS user_accounts (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user VARCHAR(255) NOT NULL UNIQUE,
+                email VARCHAR(255) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
                 hashAuthInt VARCHAR(255) NOT NULL,
-                saldo DECIMAL(10, 2) NOT NULL
+                saldo DECIMAL(10, 2) NOT NULL,
+                chavePix VARCHAR(255) NULL
             )`;
 
         const connection = await pool.getConnection();
@@ -92,8 +96,11 @@ export class UserAccountRepository {
                 return new UserAccount({
                     user: userAccountData.user,
                     password: userAccountData.password,
+                    email: userAccountData.email,
                     hashAuthInt: userAccountData.hashAuthInt,
                     saldo: bigInt(userAccountData.saldo),
+                    chavePix: userAccountData.chavePix
+                    
                 });
             }
             
@@ -119,8 +126,10 @@ export class UserAccountRepository {
                 return new UserAccount({
                     user: userAccountData.user,
                     password: userAccountData.password,
+                    email: userAccountData.email,
                     hashAuthInt: userAccountData.hashAuthInt,
                     saldo: bigInt(userAccountData.saldo),
+                    chavePix: userAccountData.chavePix
                 });
             }
             return null;

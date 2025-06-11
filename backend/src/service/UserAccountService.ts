@@ -16,4 +16,12 @@ export class UserAccountService {
 
         await this.userAccountRepository.save(userAccountData);
     }
+
+    public async validateUser(username: string, password: string): Promise<UserAccount | null> {
+        const userAccount = await this.userAccountRepository.findByUser(username);
+        if (!userAccount || userAccount.password !== password) {
+            return null;
+        }
+        return userAccount;
+    }
 }

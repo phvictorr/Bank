@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserAccountService } from '../service/UserAccountService';
 import { UserAccountMapper } from '../mapper/UserAccountMapper';
+import { generateToken } from '../utils/tokenGen';
 import { UserAccountRepository } from '../repository/UserAccountRepository';
 
 export class UserAccountController {
@@ -26,6 +27,36 @@ export class UserAccountController {
                 res.status(400).json({ message: error.message });
             } else {
                 res.status(500).json({ message: 'Erro ao registrar a conta de usuário.', error: 'Erro desconhecido.' });
+            }
+        }
+    }
+
+    public async login(req: Request, res: Response): Promise<void> {
+        const { user, password } = req.body;
+
+        if (!user || !password) {
+            res.status(400).json({ message: 'Usuário e senha são necessários.' });
+            return;
+        }
+
+        try {
+            const userAccount = await this.userAccountService.validateUser(user, password);
+            if (!userAccount) {
+                res.status(401).json({ message: 'Usuário ou senha inválidos.' });
+                return;
+            }
+
+            const token = generateToken(userAccount);
+
+            res.status(200).json({
+                message: 'Login bem-sucedido.',
+                token: token,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: 'Erro ao realizar login.', error: 'Erro desconhecido.' });
             }
         }
     }

@@ -3,15 +3,17 @@ import bigInt from 'big-integer';
 
 export class UserAccountMapper {
     public static toUserAccountRegistration(input: any): UserAccount {
-        const { user, password } = input;
-        if (!user || !password) {
-            throw new Error('Campos "user" e "password" são obrigatórios.');
+        const { user, email, password } = input;
+        if (!user || !password || !password) {
+            throw new Error('Campos "user", "email" e "password" são obrigatórios.');
         }
         return new UserAccount({
             user,
             password,
+            email,
             hashAuthInt: '',
-            saldo: bigInt(0)
+            saldo: bigInt(0),
+            chavePix: ''
         });
     }
 

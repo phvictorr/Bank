@@ -4,9 +4,13 @@ import { UserAccountController } from './controller/UserAccountController';
 import { PixController } from './controller/PixController';
 import { PixRepository } from './repository/PixRepository';
 import { UserAccountRepository } from './repository/UserAccountRepository';
+import { config } from 'dotenv';
+import { authenticateToken } from './authMiddleware';
+
+config();
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(bodyParser.json());
 const userAccountController = new UserAccountController();
@@ -27,7 +31,8 @@ setupDatabase()
 
 app.post('/register', (req, res) => userAccountController.register(req, res));
 app.get('/users/:user', (req, res) => userAccountController.getUserAccount(req, res));
-app.post('/pix', (req, res) => pixController.transfer(req, res));
+app.post('/pix', authenticateToken, (req, res) => pixController.transfer(req, res));
+app.post('/login', (req, res) => userAccountController.login(req, res));
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);

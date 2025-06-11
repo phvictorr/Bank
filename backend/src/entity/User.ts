@@ -2,9 +2,11 @@ import bigInt from 'big-integer';
 
 interface UserAccountProps {
     user: string;
+    email: string;
     password: string;
     hashAuthInt: string;
     saldo: bigInt.BigInteger;
+    chavePix: string;
 }
 
 export class UserAccount {
@@ -16,6 +18,14 @@ export class UserAccount {
 
     set user(value: string) {
         this.props.user = value;
+    }
+
+    get email() {
+        return this.props.email;
+    }
+
+    set email(value: string) {
+        this.props.email = value;
     }
 
     get password() {
@@ -40,6 +50,14 @@ export class UserAccount {
 
     set saldo(value: bigInt.BigInteger) {
         this.props.saldo = value;
+    }
+
+    get chavePix() {
+        return this.props.chavePix;
+    }
+
+    set chavePix(value: string) {
+        this.props.chavePix = value;
     }
 
     constructor(props: UserAccountProps) {
