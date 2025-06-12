@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from "react";
-import { Button, Input } from "@heroui/react";
-import { Icon } from "@iconify/react";
+import React, { useState } from 'react';
+import { Button, Input } from '@heroui/react';
+import { Icon } from '@iconify/react';
 import ShinyText from './ShinyText';
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
-  const [user, setUser] = useState('');
+  const [user, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -29,10 +29,10 @@ export default function Login() {
         localStorage.setItem('jwtToken', data.token);
         window.location.href = '/home';
       } else {
-        alert('Login failed!');
+        alert('Login falhou!');
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('Error durante o login:', error);
     }
   };
 
@@ -40,32 +40,43 @@ export default function Login() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large">
         <div className="flex flex-col items-center pb-6">
-          <ShinyText text="educa bank" disabled={false} speed={3} className='text-6xl font-sans' />
+          <ShinyText
+            text="educa bank"
+            disabled={false}
+            speed={3}
+            className="text-6xl font-sans"
+          />
           <p className="text-small text-default-500">Entre na sua conta.</p>
         </div>
         <form className="flex flex-col gap-3" onSubmit={handleLogin}>
           <div className="flex flex-col gap-2">
             <Input
               isRequired
-              name="User"
+              name="user"
               placeholder="Digite seu @"
-              type="User"
+              type="text"
               variant="bordered"
               value={user}
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <Input
               isRequired
-              type={isVisible ? "text" : "password"}
+              type={isVisible ? 'text' : 'password'}
               name="password"
               placeholder="Digite sua senha"
               variant="bordered"
               endContent={
                 <button type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-closed-linear" />
+                    <Icon
+                      className="pointer-events-none text-2xl text-default-400"
+                      icon="solar:eye-closed-linear"
+                    />
                   ) : (
-                    <Icon className="pointer-events-none text-2xl text-default-400" icon="solar:eye-bold" />
+                    <Icon
+                      className="pointer-events-none text-2xl text-default-400"
+                      icon="solar:eye-bold"
+                    />
                   )}
                 </button>
               }
@@ -74,7 +85,7 @@ export default function Login() {
             />
           </div>
           <Button color="default" type="submit">
-            <ShinyText text="Confirmar" disabled={false} speed={3} className='custom-class' />
+            <ShinyText text="Confirmar" disabled={false} speed={3} className="custom-class" />
           </Button>
         </form>
       </div>

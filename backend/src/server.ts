@@ -33,7 +33,7 @@ setupDatabase()
     .catch(error => console.error('Erro ao configurar o banco de dados:', error));
 
 app.post('/register', (req, res) => userAccountController.register(req, res));
-app.get('/users/:user', (req, res) => userAccountController.getUserAccount(req, res));
+app.get('/users/:user', authenticateToken, (req, res) => userAccountController.getUserAccount(req, res));
 app.post('/pix', authenticateToken, (req, res) => pixController.transfer(req, res));
 app.post('/login', (req, res) => userAccountController.login(req, res));
 

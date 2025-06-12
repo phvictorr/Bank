@@ -2,17 +2,21 @@
 
 import React from "react";
 import { User, Button } from "@heroui/react";
-import { MdLogout } from "react-icons/md"; 
+import { MdLogout } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 
 export interface GlassIconsItem {
   icon: React.ReactElement;
   color: string;
   label: string;
+  link?: string;
   customClass?: string;
 }
 
 export interface GlassIconsProps {
   items: GlassIconsItem[];
+  user: string;
+  onLogout: () => void;
   className?: string;
 }
 
@@ -22,9 +26,17 @@ const gradientMapping: Record<string, string> = {
   red: "linear-gradient(hsl(3, 90%, 50%), hsl(348, 90%, 50%))",
 };
 
-const GlassIcons: React.FC<GlassIconsProps> = ({ items, className }) => {
+const GlassIcons: React.FC<GlassIconsProps> = ({ items, user, onLogout, className }) => {
   const getBackgroundStyle = (color: string): React.CSSProperties => {
     return gradientMapping[color] ? { background: gradientMapping[color] } : { background: color };
+  };
+
+  const router = useRouter();
+
+  const handleNavigation = (link?: string) => {
+    if (link) {
+      router.push(link);
+    }
   };
 
   return (
@@ -36,13 +48,13 @@ const GlassIcons: React.FC<GlassIconsProps> = ({ items, className }) => {
             src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
           }}
           description="Conta"
-          name="Jane Doe"
+          name={user} // Exibir nome do usuário passado via props
         />
-        <Button color="danger" onClick={() => console.log("Logout")} className="flex item-center border-1 rounded-full w-8 h-8 hover:bg-red-700 ml-4">
-          <MdLogout/>
+        <Button color="danger" onClick={onLogout} className="flex item-center border-1 rounded-full w-8 h-8 hover:bg-red-700 ml-4">
+          <MdLogout />
         </Button>
       </div>
-      
+
       {/* Menu Section */}
       <div className="flex flex-col items-center gap-12 w-full max-w-md">
         {items.map((item, index) => (
@@ -51,6 +63,7 @@ const GlassIcons: React.FC<GlassIconsProps> = ({ items, className }) => {
             type="button"
             aria-label={item.label}
             className={`relative bg-transparent outline-none w-[4.5em] h-[4.5em] [perspective:24em] [transform-style:preserve-3d] [-webkit-tap-highlight-color:transparent] group`}
+            onClick={() => handleNavigation(item.link)}
           >
             {/* Back layer */}
             <span
