@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Menu from '../../components/menu';
 import { FaPix } from 'react-icons/fa6';
@@ -12,7 +12,7 @@ import { Alert } from '@heroui/react';
 import RowSteps from '../../components/row-steps';
 import { Input, Button } from '@heroui/react';
 import ShinyText from '../../components/ShinyText';
-
+import { withAuth } from '../../components/withAuth';
 
 const items = [
   { icon: <FaPix />, color: 'blue', label: 'Pix', link: '/pix' },
@@ -25,50 +25,15 @@ const description = "Suas contas estão em dia. Continue assim!";
 const title_sonhos = "Sua caixinha dos Sonhos";
 const description_sonhos = "Rendeu R$ 1.12 ontem";
 
-export default function HomePage() {
+const HomePage: React.FC<{ user: string, saldo: string }> = ({ user, saldo }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [user, setUser] = useState('');
-  const [saldo, setSaldo] = useState('0');
   const [chavePix, setChavePix] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      router.push('/login');
-    } else {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      const jwtUser = decodedToken.userID;
-      setUser(jwtUser);
-
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
-      fetch(`${backendUrl}/users/${jwtUser}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.saldo) {
-            setSaldo(data.saldo);
-          }
-          if (data.chavePix) {
-            setChavePix(data.chavePix);
-            setCurrentStep(2);
-          }
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }
-  }, [router]);
-
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+  const router = useRouter(); // Assegure-se de inicializar o router aqui
 
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
-    router.push('/login');
+    router.push('/login'); // Certifique-se de que `router` está definido
   };
 
   const handleChavePixSubmit = async () => {
@@ -99,6 +64,10 @@ export default function HomePage() {
 
   const handleContinue = () => {
     setCurrentStep(1);
+  };
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
   };
 
   return (
@@ -154,7 +123,9 @@ export default function HomePage() {
           {currentStep === 0 && (
             <div className="flex flex-col items-center my-5">
               <p>Você já possui uma conta no Educa Bank. Agora, siga as próximas etapas para aproveitar os benefícios!</p>
-              <Button onClick={handleContinue}><ShinyText text="Continuar" disabled={false} speed={3} className="custom-class" /></Button>
+              <Button onClick={handleContinue}>
+                <ShinyText text="Continuar" disabled={false} speed={3} className="custom-class" />
+              </Button>
             </div>
           )}
           {currentStep === 1 && (
@@ -164,11 +135,15 @@ export default function HomePage() {
                 placeholder="Digite sua Chave Pix"
                 onChange={(e) => setChavePix(e.target.value)}
               />
-              <Button onClick={handleChavePixSubmit}><ShinyText text="Salvar ChavePix" disabled={false} speed={3} className="custom-class" /></Button>
+              <Button onClick={handleChavePixSubmit}>
+                <ShinyText text="Salvar ChavePix" disabled={false} speed={3} className="custom-class" />
+              </Button>
             </div>
           )}
         </Card>
       </div>
     </main>
   );
-}
+};
+
+export default withAuth(HomePage);
