@@ -140,4 +140,32 @@ export class UserAccountRepository {
             connection.release();
         }
     }
+
+    public async findByChavePix(chavePix: string): Promise<UserAccount | null> {
+        const query = `
+            SELECT * FROM user_accounts WHERE chavePix = ?`;
+        
+        const connection = await pool.getConnection();
+        try {
+            const [rows] = await connection.query(query, [chavePix]) as [UserAccountRow[], any];
+
+            if (rows.length > 0) {
+                const userAccountData = rows[0];
+                return new UserAccount({
+                    user: userAccountData.user,
+                    password: userAccountData.password,
+                    email: userAccountData.email,
+                    hashAuthInt: userAccountData.hashAuthInt,
+                    saldo: bigInt(userAccountData.saldo),
+                    chavePix: userAccountData.chavePix
+                });
+            }
+            return null;
+        } catch (error) {
+            console.error('Erro ao procurar conta de usuário pela chave PIX:', error);
+            throw new Error('Falha ao procurar conta de usuário pela chave PIX');
+        } finally {
+            connection.release();
+        }
+    }
 }

@@ -11,19 +11,17 @@ export class PixController {
     }
 
     public async transfer(req: Request, res: Response): Promise<void> {
-        const { userIDRem, userIDDest, valueOfOperation } = req.body;
+        const { chavePixRem, chavePixDest, valueOfOperation } = req.body;
 
-        if (!userIDRem || !userIDDest || !valueOfOperation) {
+        if (!chavePixRem || !chavePixDest || !valueOfOperation) {
             res.status(400).json({
-                message: 'Dados incompletos. Certifique-se de fornecer userIDRem, userIDDest e valueOfOperation.',
+                message: 'Dados incompletos. Certifique-se de fornecer chavePixRem, chavePixDest e valueOfOperation.',
             });
             return;
         }
 
-        const pix = new Pix({ userIDRem, userIDDest, valueOfOperation: bigInt(valueOfOperation), hashAuthInt: '' });
-
         try {
-            await this.pixService.transfer(pix);
+            const pix = await this.pixService.prepareTransfer(chavePixRem, chavePixDest, valueOfOperation);
             res.status(200).json({ message: 'Transferência realizada com sucesso.' });
         } catch (error) {
             if (error instanceof Error) {

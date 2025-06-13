@@ -1,8 +1,8 @@
 import bigInt from 'big-integer';
 
 interface PixProps {
-    userIDRem: string;
-    userIDDest: string;
+    chavePixRem: string;
+    chavePixDest: string;
     valueOfOperation: bigInt.BigInteger;
     hashAuthInt: string;
 }
@@ -14,18 +14,18 @@ export class Pix {
         this.props = props;
     }
 
-    get userIDRem() {
-        return this.props.userIDRem;
+    get chavePixRem() {
+        return this.props.chavePixRem;
     }
 
-    get userIDDest() {
-        return this.props.userIDDest;
+    get chavePixDest() {
+        return this.props.chavePixDest;
     }
 
     get valueOfOperation() {
         return this.props.valueOfOperation;
     }
-
+    
     get hashAuthInt() {
         return this.props.hashAuthInt;
     }

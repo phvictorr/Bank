@@ -13,6 +13,7 @@ export class UserAccount {
     private props: UserAccountProps;
 
     get user() {
+        console.log(this.props.user)
         return this.props.user;
     }
 

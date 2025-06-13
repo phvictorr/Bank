@@ -12,14 +12,14 @@ export class PixRepository {
     }
 
     public async transfer(pix: Pix): Promise<void> {
-        const { userIDRem, userIDDest, valueOfOperation } = pix;
-
-        const userAccountRem = await this.userAccountRepository.findByID(userIDRem);
+        const { chavePixRem, chavePixDest, valueOfOperation } = pix;
+        console.log(pix)
+        const userAccountRem = await this.userAccountRepository.findByChavePix(chavePixRem);
         if (!userAccountRem) {
             throw new Error("Usuário remetente não encontrado.");
         }
 
-        const userAccountDest = await this.userAccountRepository.findByID(userIDDest);
+        const userAccountDest = await this.userAccountRepository.findByChavePix(chavePixDest);
         if (!userAccountDest) {
             throw new Error("Usuário destinatário não encontrado.");
         }
@@ -33,17 +33,26 @@ export class PixRepository {
 
         await this.userAccountRepository.saldo_update(userAccountRem);
         await this.userAccountRepository.saldo_update(userAccountDest);
+
+        const transferData = {
+            userIDRem: userAccountRem.user,
+            userIDDest: userAccountDest.user,
+            chavePixRem: chavePixRem,
+            chavePixDest: chavePixDest,
+            valueOfOperation: valueOfOperation
+        };
+
         await this.recordTransfer(pix);
     }
 
     private async recordTransfer(pix: Pix): Promise<void> {
-        const { userIDRem, userIDDest, valueOfOperation, hashAuthInt } = pix;
+        const { chavePixRem, chavePixDest, valueOfOperation, hashAuthInt } = pix;
 
         const query = `
             INSERT INTO pix_transfers (user_id_rem, user_id_dest, value_of_operation, hash_auth_int)
             VALUES (?, ?, ?, ?)`;
 
-        const values = [userIDRem, userIDDest, valueOfOperation.toString(), hashAuthInt];
+        const values = [chavePixRem, chavePixDest, valueOfOperation.toString(), hashAuthInt];
 
         const connection = await pool.getConnection();
         try {
