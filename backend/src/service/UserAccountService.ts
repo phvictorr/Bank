@@ -27,15 +27,14 @@ export class UserAccountService {
 
     public async cadastrarChavePix(user: string, chavePix: string): Promise<void> {
         const userAccount = await this.userAccountRepository.findByUser(user);
-        const userPix = await this.userAccountRepository.findByChavePix(user);
-        
-        console.log("Chave para" + userPix + "pronta para ser cadastrada");
+        const userPix = await this.userAccountRepository.findByChavePix(chavePix);
 
         if (!userAccount) {
             throw new Error('Usuário não encontrado.');
         }
 
         if (!userPix) {
+            console.log("cheguei aqui, por que userpix é null");
             userAccount.chavePix = chavePix;
             await this.userAccountRepository.updateChavePix(userAccount);
         } else {
