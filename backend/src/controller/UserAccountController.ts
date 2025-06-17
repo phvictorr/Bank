@@ -83,4 +83,24 @@ export class UserAccountController {
             }
         }
     }
+
+    public async pixCadastro(req: Request, res: Response): Promise<void> {
+        const { user, chavePix } = req.body;
+
+        if (!user || !chavePix) {
+            res.status(400).json({ message: 'Dados incompletos: user e chavePix são necessários.' });
+            return;
+        }
+
+        try {
+            await this.userAccountService.cadastrarChavePix(user, chavePix);
+            res.status(200).json({ message: 'Chave PIX cadastrada com sucesso.' });
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(500).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: 'Erro ao cadastrar chave PIX.', error: 'Erro desconhecido.' });
+            }
+        }
+    }
 }

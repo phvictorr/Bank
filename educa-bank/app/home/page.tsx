@@ -29,11 +29,11 @@ const HomePage: React.FC<{ user: string, saldo: string }> = ({ user, saldo }) =>
   const [isVisible, setIsVisible] = useState(true);
   const [chavePix, setChavePix] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
-  const router = useRouter(); // Assegure-se de inicializar o router aqui
+  const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
-    router.push('/login'); // Certifique-se de que `router` está definido
+    router.push('/login');
   };
 
   const handleChavePixSubmit = async () => {
@@ -47,7 +47,7 @@ const HomePage: React.FC<{ user: string, saldo: string }> = ({ user, saldo }) =>
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({ chavePix })
+          body: JSON.stringify({ user, chavePix })
         });
 
         if (response.ok) {
@@ -87,7 +87,7 @@ const HomePage: React.FC<{ user: string, saldo: string }> = ({ user, saldo }) =>
                 >
                   {isVisible ? <MdVisibility /> : <MdVisibilityOff />}
                 </button>
-                <p className="text-tiny uppercase font-bold">{user}</p>
+                <p className="text-tiny uppercase font-bold">Saldo</p>
                 <small className="text-default-500">Conta corrente</small>
               </CardHeader>
               <CardBody className="overflow-visible py-2 flex flex-col items-start">
@@ -129,15 +129,17 @@ const HomePage: React.FC<{ user: string, saldo: string }> = ({ user, saldo }) =>
             </div>
           )}
           {currentStep === 1 && (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col">
               <Input
                 value={chavePix}
                 placeholder="Digite sua Chave Pix"
                 onChange={(e) => setChavePix(e.target.value)}
               />
-              <Button onClick={handleChavePixSubmit}>
-                <ShinyText text="Salvar ChavePix" disabled={false} speed={3} className="custom-class" />
-              </Button>
+              <div className='py-3'>
+                <Button onClick={handleChavePixSubmit}>
+                  <ShinyText text="Salvar e continuar" disabled={false} speed={3} className="custom-class" />
+                </Button>
+              </div>
             </div>
           )}
         </Card>

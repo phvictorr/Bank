@@ -168,4 +168,24 @@ export class UserAccountRepository {
             connection.release();
         }
     }
+
+    public async updateChavePix(userAccount: UserAccount): Promise<void> {
+        const query = `
+            UPDATE user_accounts
+            SET chavePix = ?
+            WHERE user = ?`;
+
+        const values = [userAccount.chavePix, userAccount.user];
+
+        const connection = await pool.getConnection();
+        try {
+            await connection.execute(query, values);
+            console.log(`ChavePix do usuário ${userAccount.user} atualizada para ${userAccount.chavePix}.`);
+        } catch (error) {
+            console.error('Erro ao atualizar chavePix do usuário:', error);
+            throw new Error('Falha ao atualizar chavePix do usuário');
+        } finally {
+            connection.release();
+        }
+    }
 }
