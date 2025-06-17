@@ -34,14 +34,6 @@ export class PixRepository {
         await this.userAccountRepository.saldo_update(userAccountRem);
         await this.userAccountRepository.saldo_update(userAccountDest);
 
-        const transferData = {
-            userIDRem: userAccountRem.user,
-            userIDDest: userAccountDest.user,
-            chavePixRem: chavePixRem,
-            chavePixDest: chavePixDest,
-            valueOfOperation: valueOfOperation
-        };
-
         await this.recordTransfer(pix);
     }
 
@@ -49,7 +41,7 @@ export class PixRepository {
         const { chavePixRem, chavePixDest, valueOfOperation, hashAuthInt } = pix;
 
         const query = `
-            INSERT INTO pix_transfers (user_id_rem, user_id_dest, value_of_operation, hash_auth_int)
+            INSERT INTO pix_transfers (chavePixRem, chavePixDest, value_of_operation, hash_auth_int)
             VALUES (?, ?, ?, ?)`;
 
         const values = [chavePixRem, chavePixDest, valueOfOperation.toString(), hashAuthInt];
@@ -69,13 +61,11 @@ export class PixRepository {
         const createTableQuery = `
             CREATE TABLE IF NOT EXISTS pix_transfers (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id_rem VARCHAR(255) NOT NULL,
-                user_id_dest VARCHAR(255) NOT NULL,
+                chavePixRem VARCHAR(255) NOT NULL,
+                chavePixDest VARCHAR(255) NOT NULL,
                 date_of_operation DATETIME DEFAULT CURRENT_TIMESTAMP,
                 value_of_operation DECIMAL(10, 2) NOT NULL,
-                hash_auth_int VARCHAR(255) NOT NULL,
-                FOREIGN KEY (user_id_rem) REFERENCES user_accounts(user) ON DELETE CASCADE,
-                FOREIGN KEY (user_id_dest) REFERENCES user_accounts(user) ON DELETE CASCADE
+                hash_auth_int VARCHAR(255) NOT NULL
             )`;
 
         const connection = await pool.getConnection();
