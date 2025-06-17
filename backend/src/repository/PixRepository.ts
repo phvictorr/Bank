@@ -28,18 +28,20 @@ export class PixRepository {
             throw new Error("Saldo insuficiente.");
         }
 
-        userAccountRem.saldo = userAccountRem.saldo.subtract(valueOfOperation);
-        userAccountDest.saldo = userAccountDest.saldo.add(valueOfOperation);
+        if (!this.recordTransfer(pix)){
+            throw new Error("Algo inesperado ocorreu durantea transferência PIX. Tente novamente mais tarde.");
+        }else {
+            userAccountRem.saldo = userAccountRem.saldo.subtract(valueOfOperation);
+            userAccountDest.saldo = userAccountDest.saldo.add(valueOfOperation);
 
-        await this.userAccountRepository.saldo_update(userAccountRem);
-        await this.userAccountRepository.saldo_update(userAccountDest);
-
-        await this.recordTransfer(pix);
+            await this.userAccountRepository.saldo_update(userAccountRem);
+            await this.userAccountRepository.saldo_update(userAccountDest);
+        }
     }
 
-    private async recordTransfer(pix: Pix): Promise<void> {
+    private async recordTransfer(pix: Pix): Promise<boolean> {
         const { chavePixRem, chavePixDest, valueOfOperation, hashAuthInt } = pix;
-
+        
         const query = `
             INSERT INTO pix_transfers (chavePixRem, chavePixDest, value_of_operation, hash_auth_int)
             VALUES (?, ?, ?, ?)`;
@@ -55,6 +57,8 @@ export class PixRepository {
         } finally {
             connection.release();
         }
+
+        return true;
     }
 
     public async createPixTransfersTable(): Promise<void> {

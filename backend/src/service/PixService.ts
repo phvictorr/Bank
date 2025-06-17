@@ -12,7 +12,6 @@ export class PixService {
 
     public async prepareTransfer(chavePixRem: string, chavePixDest: string, valueOfOperation: string): Promise<void> {
         const operationValue = bigInt(valueOfOperation);
-        
         const hashAuthInt = generateHash(chavePixRem + operationValue.toString());
         
         const pix = new Pix({
